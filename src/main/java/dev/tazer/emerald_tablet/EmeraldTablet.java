@@ -1,7 +1,7 @@
 package dev.tazer.emerald_tablet;
 
+import dev.tazer.emerald_tablet.loot.TabletLootModifiers;
 import dev.tazer.emerald_tablet.registry.Namespace;
-import dev.tazer.emerald_tablet.registry.TabletBlocks;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -32,7 +32,7 @@ public class EmeraldTablet {
     }
 
     public EmeraldTablet(IEventBus bus, ModContainer container, Dist dist) {
-        TabletBlocks.register();
+        TabletLootModifiers.register();
         bus.addListener(EmeraldTablet::register);
     }
 
