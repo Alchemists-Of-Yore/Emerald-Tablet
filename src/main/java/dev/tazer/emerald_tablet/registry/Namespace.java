@@ -1,5 +1,6 @@
 package dev.tazer.emerald_tablet.registry;
 
+import dev.tazer.emerald_tablet.integration.ModIntegration;
 import dev.tazer.emerald_tablet.registry.definition.Definition;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinitionSet;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Namespace {
@@ -109,6 +111,10 @@ public class Namespace {
 
     public BlockItemTag blockAndItemTag(TagKey<Block> blockTagKey, TagKey<Item> itemTagKey) {
         return new BlockItemTag(tag(blockTagKey), tag(itemTagKey));
+    }
+
+    public void ifLoaded(String modId, Consumer<Namespace> action) {
+        ModIntegration.ifLoaded(modId, () -> action.accept(this));
     }
 
     public CreativeTabModification modifyTab(ResourceKey<CreativeModeTab> tab) {
