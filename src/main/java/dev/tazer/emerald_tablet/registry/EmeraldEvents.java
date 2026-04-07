@@ -8,6 +8,7 @@ import dev.tazer.emerald_tablet.registry.definition.builtin.PotionDefinition;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.block.Blocks;
@@ -87,6 +88,25 @@ public class EmeraldEvents {
                     for (ItemStack stack : tab.resolveItems(namespace)) {
                         event.accept(stack);
                     }
+                }
+            }
+
+            for (CreativeTabModification modification : namespace.getTabModifications()) {
+                if (event.getTabKey() == modification.tab()) {
+                    for (CreativeTabModification.Entry entry : modification.entries()) {
+                        switch (entry.type()) {
+                            case ADD -> event.accept(new ItemStack(entry.item().get()));
+                            case INSERT_BEFORE -> event.insertBefore(
+                                    new ItemStack(entry.anchor().get()),
+                                    new ItemStack(entry.item().get()),
+                                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            case INSERT_AFTER -> event.insertAfter(
+                                    new ItemStack(entry.anchor().get()),
+                                    new ItemStack(entry.item().get()),
+                                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                        }
+                    }
+                    modification.freeze();
                 }
             }
         });

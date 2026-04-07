@@ -10,6 +10,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -23,6 +24,7 @@ public class Namespace {
     private final String id;
     private final List<Definition<?, ?>> definitions = new ArrayList<>();
     private final Map<TagKey<?>, Tag<?>> tags = new HashMap<>();
+    private final List<CreativeTabModification> creativeTabModifications = new ArrayList<>();
 
     public Namespace(String id) {
         this.id = id;
@@ -107,6 +109,16 @@ public class Namespace {
 
     public BlockItemTag blockAndItemTag(TagKey<Block> blockTagKey, TagKey<Item> itemTagKey) {
         return new BlockItemTag(tag(blockTagKey), tag(itemTagKey));
+    }
+
+    public CreativeTabModification modifyTab(ResourceKey<CreativeModeTab> tab) {
+        CreativeTabModification modification = new CreativeTabModification(tab);
+        creativeTabModifications.add(modification);
+        return modification;
+    }
+
+    public List<CreativeTabModification> getTabModifications() {
+        return creativeTabModifications;
     }
 
     public ResourceLocation id(String path) {
