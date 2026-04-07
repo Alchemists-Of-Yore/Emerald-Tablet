@@ -10,7 +10,7 @@ import net.minecraft.world.level.biome.Biome;
 import java.util.function.Function;
 
 public class BiomeDefinition extends DynamicDefinition<Biome> implements HasName {
-    private final Translations translations;
+    private Translations translations;
 
     public BiomeDefinition(String id, Biome biome) {
         super(Registries.BIOME, id, biome);
@@ -25,6 +25,11 @@ public class BiomeDefinition extends DynamicDefinition<Biome> implements HasName
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override

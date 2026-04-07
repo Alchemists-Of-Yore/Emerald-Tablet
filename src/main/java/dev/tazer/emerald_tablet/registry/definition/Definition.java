@@ -22,7 +22,7 @@ public abstract class Definition<T extends B, B> {
     }
 
     public void build(Namespace namespace) {
-        requireEditable();
+        requireMutable();
         this.namespace = namespace;
     }
 
@@ -38,7 +38,7 @@ public abstract class Definition<T extends B, B> {
         return holder != null;
     }
 
-    public void requireEditable() {
+    public void requireMutable() {
         if (namespace != null) throw new IllegalStateException("Definition '" + id + "' is already built!");
     }
 
@@ -50,7 +50,7 @@ public abstract class Definition<T extends B, B> {
         if (holder == null) throw new IllegalStateException("Definition '" + id + "' has not been bound yet!");
     }
 
-    public void onRegister(Namespace namespace) {
+    public void onBuild(Namespace namespace) {
     }
 
     public final Namespace namespace() {

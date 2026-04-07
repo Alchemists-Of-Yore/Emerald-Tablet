@@ -9,5 +9,9 @@ public enum LootTableTemplate {
     LEAVES,
     NOTHING,
     SHEARS_ONLY,
-    SHEARS_OR_SILK_TOUCH
+    SHEARS_OR_SILK_TOUCH,
+    BED,
+    CANDLE_CAKE,
+    FLOWER_POT,
+    BOOKSHELF
 }

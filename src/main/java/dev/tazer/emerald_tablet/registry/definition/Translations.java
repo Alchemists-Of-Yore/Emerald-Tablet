@@ -5,28 +5,36 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Translations {
-    private String name;
-    private final Map<String, String> extra = new LinkedHashMap<>();
+public final class Translations {
+    private final String name;
+    private final Map<String, String> extra;
 
-    public Translations(String defaultName) {
-        this.name = defaultName;
+    public Translations(String name) {
+        this.name = name;
+        this.extra = Map.of();
+    }
+
+    public Translations(String name, Map<String, String> extra) {
+        this.name = name;
+        this.extra = Collections.unmodifiableMap(new LinkedHashMap<>(extra));
     }
 
     public String name() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Map<String, String> extra() {
-        return Collections.unmodifiableMap(extra);
+        return extra;
     }
 
-    public void add(String suffix, String value) {
-        extra.put(suffix, value);
+    public Translations withName(String name) {
+        return new Translations(name, extra);
+    }
+
+    public Translations withExtra(String suffix, String value) {
+        Map<String, String> newExtra = new LinkedHashMap<>(extra);
+        newExtra.put(suffix, value);
+        return new Translations(name, newExtra);
     }
 
     public static String createName(String id) {

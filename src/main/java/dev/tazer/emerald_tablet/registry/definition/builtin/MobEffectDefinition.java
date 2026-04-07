@@ -10,7 +10,7 @@ import net.minecraft.world.effect.MobEffect;
 import java.util.function.Supplier;
 
 public class MobEffectDefinition<T extends MobEffect> extends BuiltInDefinition<T, MobEffect> implements HasName {
-    private final Translations translations;
+    private Translations translations;
 
     public MobEffectDefinition(String id, Supplier<T> mobEffect) {
         super(Registries.MOB_EFFECT, id, mobEffect);
@@ -20,6 +20,11 @@ public class MobEffectDefinition<T extends MobEffect> extends BuiltInDefinition<
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override

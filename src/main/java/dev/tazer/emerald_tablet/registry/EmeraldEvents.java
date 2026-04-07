@@ -2,11 +2,13 @@ package dev.tazer.emerald_tablet.registry;
 
 import dev.tazer.emerald_tablet.EmeraldTablet;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BlockDefinition;
+import dev.tazer.emerald_tablet.registry.definition.builtin.CreativeTabDefinition;
 import dev.tazer.emerald_tablet.registry.definition.builtin.EntityTypeDefinition;
 import dev.tazer.emerald_tablet.registry.definition.builtin.PotionDefinition;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
@@ -16,6 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -71,6 +74,19 @@ public class EmeraldEvents {
             for (PotionDefinition definition : namespace.getDefinitions(PotionDefinition.class)) {
                 if (definition.brewingInput() != null && definition.brewingIngredient() != null) {
                     builder.addMix(definition.brewingInput().get(), definition.brewingIngredient().get(), definition.holder());
+                }
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void onCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+        EmeraldTablet.namespaces().forEach(namespace -> {
+            for (CreativeTabDefinition tab : namespace.getDefinitions(CreativeTabDefinition.class)) {
+                if (event.getTab() == tab.get()) {
+                    for (ItemStack stack : tab.resolveItems(namespace)) {
+                        event.accept(stack);
+                    }
                 }
             }
         });

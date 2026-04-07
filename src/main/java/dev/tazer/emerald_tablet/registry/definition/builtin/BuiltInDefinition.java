@@ -30,7 +30,7 @@ public abstract class BuiltInDefinition<T extends B, B> extends Definition<T, B>
 
     @SuppressWarnings("unchecked")
     public <S extends BuiltInDefinition<T, B>> S withAliases(String... aliases) {
-        requireEditable();
+        requireMutable();
         this.aliases.addAll(Set.of(aliases));
         return (S) this;
     }

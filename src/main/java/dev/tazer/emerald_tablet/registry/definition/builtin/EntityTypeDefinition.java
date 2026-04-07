@@ -21,15 +21,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<EntityType<T>, EntityType<?>> implements HasName {
-    private final Translations translations;
+    private Translations translations;
     private int spawnEggPrimaryColor = -1;
     private int spawnEggSecondaryColor = -1;
     @Nullable
     private Supplier<AttributeSupplier.Builder> attributesSupplier;
     @Nullable
     private SpawnPlacementConfig<?> spawnPlacementConfig;
-    @Nullable
-    private Supplier<?> rendererSupplier;
 
     public EntityTypeDefinition(String id, Supplier<EntityType<T>> entityType) {
         super(Registries.ENTITY_TYPE, id, entityType);
@@ -41,7 +39,7 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
     }
 
     public EntityTypeDefinition<T> spawnEgg(int primaryColor, int secondaryColor) {
-        requireEditable();
+        requireMutable();
         this.spawnEggPrimaryColor = primaryColor;
         this.spawnEggSecondaryColor = secondaryColor;
         return this;
@@ -60,7 +58,7 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
     }
 
     public EntityTypeDefinition<T> attributes(Supplier<AttributeSupplier.Builder> attributes) {
-        requireEditable();
+        requireMutable();
         this.attributesSupplier = attributes;
         return this;
     }
@@ -71,7 +69,7 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
     }
 
     public <M extends Mob> EntityTypeDefinition<T> spawnPlacement(SpawnPlacementType placementType, Heightmap.Types heightmapType, SpawnPlacements.SpawnPredicate<M> predicate) {
-        requireEditable();
+        requireMutable();
         this.spawnPlacementConfig = new SpawnPlacementConfig<>(placementType, heightmapType, predicate);
         return this;
     }
@@ -81,20 +79,14 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
         return spawnPlacementConfig;
     }
 
-    public EntityTypeDefinition<T> renderer(Supplier<?> renderer) {
-        requireEditable();
-        this.rendererSupplier = renderer;
-        return this;
-    }
-
-    @Nullable
-    public Supplier<?> rendererSupplier() {
-        return rendererSupplier;
-    }
-
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override
@@ -108,16 +100,18 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
     }
 
     @Override
-    public void onRegister(Namespace namespace) {
-        super.onRegister(namespace);
+    public void onBuild(Namespace namespace) {
+        super.onBuild(namespace);
 
         if (hasSpawnEgg()) {
             @SuppressWarnings("unchecked")
             EntityType<? extends Mob> mobType = (EntityType<? extends Mob>) get();
-            namespace.add(new ItemDefinition<>(id() + "_spawn_egg",
-                    () -> new SpawnEggItem(mobType, spawnEggPrimaryColor, spawnEggSecondaryColor, new Item.Properties()))
-                    .model(ItemModelTemplate.SPAWN_EGG)
-                    .withName(translations.name() + " Spawn Egg"));
+            namespace.add(
+                    new ItemDefinition<>(
+                            id() + "_spawn_egg",
+                            () -> new SpawnEggItem(mobType, spawnEggPrimaryColor, spawnEggSecondaryColor, new Item.Properties())
+                    ).model(ItemModelTemplate.SPAWN_EGG).withName(translations.name() + " Spawn Egg")
+            );
         }
     }
 

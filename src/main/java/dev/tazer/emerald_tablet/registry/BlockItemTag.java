@@ -2,7 +2,6 @@ package dev.tazer.emerald_tablet.registry;
 
 import dev.tazer.emerald_tablet.registry.definition.builtin.BlockDefinition;
 import dev.tazer.emerald_tablet.registry.definition.builtin.ItemDefinition;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -15,11 +14,10 @@ public class BlockItemTag {
         this.itemTag = itemTag;
     }
 
-    @SafeVarargs
     public final BlockItemTag add(BlockDefinition<?>... blockDefinitions) {
         for (BlockDefinition<?> blockDefinition : blockDefinitions) {
             blockTag.add(blockDefinition);
-            ItemDefinition<?> itemDefinition = blockDefinition.itemDefinition();
+            ItemDefinition<?> itemDefinition = blockDefinition.item();
             if (itemDefinition != null) {
                 itemTag.add(itemDefinition);
             }

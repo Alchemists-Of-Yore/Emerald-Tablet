@@ -6,8 +6,14 @@ import dev.tazer.emerald_tablet.registry.definition.template.LootTableTemplate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CandleCakeBlock;
+import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +47,14 @@ public class EmeraldBlockLootProvider extends BlockLootSubProvider {
                 case NOTHING -> {}
                 case SHEARS_ONLY -> add(block, createShearsOnlyDrop(block));
                 case SHEARS_OR_SILK_TOUCH -> add(block, createShearsDispatchTable(block, applyExplosionCondition(block, LootItem.lootTableItem(block))));
+                case BED -> add(block, createSinglePropConditionTable(block, BedBlock.PART, BedPart.HEAD));
+                case CANDLE_CAKE -> add(block, createCandleCakeDrops((CandleCakeBlock) block));
+                case FLOWER_POT -> {
+                    if (block instanceof FlowerPotBlock potBlock) {
+                        add(block, createPotFlowerItemTable(potBlock.getPotted()));
+                    }
+                }
+                case BOOKSHELF -> add(block, createSingleItemTableWithSilkTouch(block, Items.BOOK, ConstantValue.exactly(3)));
             }
         }
     }

@@ -1,7 +1,7 @@
 package dev.tazer.emerald_tablet.registry;
 
 import dev.tazer.emerald_tablet.registry.definition.Definition;
-import dev.tazer.emerald_tablet.registry.definition.DefinitionSet;
+import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinitionSet;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
 import dev.tazer.emerald_tablet.registry.definition.dynamic.DynamicDefinition;
 import dev.tazer.emerald_tablet.registry.definition.dynamic.DynamicDefinitionSet;
@@ -35,12 +35,12 @@ public class Namespace {
     public <T extends Definition<?, ?>> T add(T definition) {
         definition.build(this);
         definitions.add(definition);
-        definition.onRegister(this);
+        definition.onBuild(this);
         return definition;
     }
 
-    public <B> DefinitionSet<B> definitionSet(ResourceKey<Registry<B>> registryKey, Registry<B> builtInRegistry) {
-        return new DefinitionSet<>(registryKey, builtInRegistry, this);
+    public <B> BuiltInDefinitionSet<B> builtinDefinitionSet(ResourceKey<Registry<B>> registryKey, Registry<B> builtInRegistry) {
+        return new BuiltInDefinitionSet<>(registryKey, builtInRegistry, this);
     }
 
     public <T> DynamicDefinitionSet<T> dynamicDefinitionSet(ResourceKey<Registry<T>> registryKey) {

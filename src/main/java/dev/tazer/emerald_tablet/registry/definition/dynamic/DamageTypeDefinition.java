@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DamageTypeDefinition extends DynamicDefinition<DamageType> implements HasName {
-    private final Translations translations;
+    private Translations translations;
     @Nullable
     private String deathMessage;
     @Nullable
@@ -34,6 +34,11 @@ public class DamageTypeDefinition extends DynamicDefinition<DamageType> implemen
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override

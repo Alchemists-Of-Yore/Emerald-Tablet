@@ -8,10 +8,11 @@ import java.util.Map;
 public interface HasName {
     String id();
     Namespace namespace();
-    void requireEditable();
+    void requireMutable();
 
     String translationPrefix();
     Translations translations();
+    void setTranslations(Translations translations);
 
     default String translationKey() {
         return translationPrefix() + "." + namespace().id() + "." + id();
@@ -27,15 +28,15 @@ public interface HasName {
 
     @SuppressWarnings("unchecked")
     default <S extends Definition<?, ?>> S withName(String name) {
-        requireEditable();
-        translations().setName(name);
+        requireMutable();
+        setTranslations(translations().withName(name));
         return (S) this;
     }
 
     @SuppressWarnings("unchecked")
     default <S extends Definition<?, ?>> S withTranslation(String suffix, String value) {
-        requireEditable();
-        translations().add(suffix, value);
+        requireMutable();
+        setTranslations(translations().withExtra(suffix, value));
         return (S) this;
     }
 }

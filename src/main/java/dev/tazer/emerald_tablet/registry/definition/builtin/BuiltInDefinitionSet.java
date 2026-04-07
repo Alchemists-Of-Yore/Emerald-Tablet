@@ -1,7 +1,6 @@
-package dev.tazer.emerald_tablet.registry.definition;
+package dev.tazer.emerald_tablet.registry.definition.builtin;
 
 import dev.tazer.emerald_tablet.registry.Namespace;
-import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
@@ -10,13 +9,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class DefinitionSet<B> {
+public class BuiltInDefinitionSet<B> {
     private final ResourceKey<Registry<B>> registryKey;
     private final Registry<B> builtInRegistry;
     private final Namespace namespace;
     private final List<BuiltInDefinition<?, B>> entries = new ArrayList<>();
 
-    public DefinitionSet(ResourceKey<Registry<B>> registryKey, Registry<B> builtInRegistry, Namespace namespace) {
+    public BuiltInDefinitionSet(ResourceKey<Registry<B>> registryKey, Registry<B> builtInRegistry, Namespace namespace) {
         this.registryKey = registryKey;
         this.builtInRegistry = builtInRegistry;
         this.namespace = namespace;

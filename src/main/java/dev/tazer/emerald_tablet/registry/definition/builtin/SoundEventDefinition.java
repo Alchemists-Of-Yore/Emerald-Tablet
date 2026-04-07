@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.Map;
 
 public class SoundEventDefinition extends BuiltInDefinition<SoundEvent, SoundEvent> implements HasName {
-    private final Translations translations;
+    private Translations translations;
     private boolean hasSubtitle = true;
 
     public SoundEventDefinition(String id) {
@@ -20,7 +20,7 @@ public class SoundEventDefinition extends BuiltInDefinition<SoundEvent, SoundEve
     }
 
     public SoundEventDefinition withoutSubtitle() {
-        requireEditable();
+        requireMutable();
         this.hasSubtitle = false;
         return this;
     }
@@ -32,6 +32,11 @@ public class SoundEventDefinition extends BuiltInDefinition<SoundEvent, SoundEve
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override

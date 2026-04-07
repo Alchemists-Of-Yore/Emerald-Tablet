@@ -52,13 +52,13 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> withoutItem() {
-        requireEditable();
+        requireMutable();
         this.item = null;
         return this;
     }
 
     public BlockDefinition<T> withItem(ItemDefinition<?> itemDefinition) {
-        requireEditable();
+        requireMutable();
         this.item = itemDefinition;
         return this;
     }
@@ -68,12 +68,12 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     @Nullable
-    public ItemDefinition<?> itemDefinition() {
+    public ItemDefinition<?> item() {
         return item;
     }
 
     public BlockDefinition<T> blockState(BlockStateTemplate template) {
-        requireEditable();
+        requireMutable();
         this.blockStateTemplate = template;
         return this;
     }
@@ -84,7 +84,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> lootTable(LootTableTemplate template) {
-        requireEditable();
+        requireMutable();
         this.lootTableTemplate = template;
         return this;
     }
@@ -95,7 +95,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> alternativeDrop(Supplier<Item> drop) {
-        requireEditable();
+        requireMutable();
         this.alternativeDrop = drop;
         return this;
     }
@@ -106,7 +106,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> miningTool(MiningTool tool) {
-        requireEditable();
+        requireMutable();
         this.miningTool = tool;
         return this;
     }
@@ -117,7 +117,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> miningLevel(MiningLevel level) {
-        requireEditable();
+        requireMutable();
         this.miningLevel = level;
         return this;
     }
@@ -128,7 +128,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> renderType(RenderType type) {
-        requireEditable();
+        requireMutable();
         this.renderType = type;
         return this;
     }
@@ -139,7 +139,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> flammable(int encouragement, int flammability) {
-        requireEditable();
+        requireMutable();
         this.flameEncouragement = encouragement;
         this.flammability = flammability;
         return this;
@@ -158,7 +158,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     public BlockDefinition<T> strippable(Supplier<Block> stripped) {
-        requireEditable();
+        requireMutable();
         this.strippedBlock = stripped;
         return this;
     }
@@ -192,11 +192,11 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     @Override
-    public void onRegister(Namespace namespace) {
-        super.onRegister(namespace);
+    public void onBuild(Namespace namespace) {
+        super.onBuild(namespace);
 
         if (item != null) {
-            namespace.add(item);
+            item = namespace.add(item);
         }
 
         if (miningTool != null) {

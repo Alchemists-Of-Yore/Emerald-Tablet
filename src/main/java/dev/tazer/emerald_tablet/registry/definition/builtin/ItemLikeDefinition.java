@@ -9,7 +9,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.function.Supplier;
 
 public abstract class ItemLikeDefinition<T extends B, B extends ItemLike> extends BuiltInDefinition<T, B> implements HasName {
-    private final Translations translations;
+    private Translations translations;
 
     public ItemLikeDefinition(ResourceKey<Registry<B>> registry, String id, Supplier<T> itemLike) {
         super(registry, id, itemLike);
@@ -19,5 +19,10 @@ public abstract class ItemLikeDefinition<T extends B, B extends ItemLike> extend
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implements HasName {
-    private final Translations translations;
+    private Translations translations;
     @Nullable
     private Supplier<Holder<Potion>> brewingInput;
     @Nullable
@@ -27,7 +27,7 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     }
 
     public PotionDefinition brewingRecipe(Supplier<Holder<Potion>> input, Supplier<Item> ingredient) {
-        requireEditable();
+        requireMutable();
         this.brewingInput = input;
         this.brewingIngredient = ingredient;
         return this;
@@ -46,6 +46,11 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     @Override
     public Translations translations() {
         return translations;
+    }
+
+    @Override
+    public void setTranslations(Translations translations) {
+        this.translations = translations;
     }
 
     @Override
