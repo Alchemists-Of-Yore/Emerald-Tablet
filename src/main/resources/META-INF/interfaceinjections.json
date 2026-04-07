@@ -1,1 +1,5 @@
-{}
+{
+  "net/minecraft/world/entity/LivingEntity": [
+    "dev/tazer/emerald_tablet/extension/LivingEntityExtension"
+  ]
+}
