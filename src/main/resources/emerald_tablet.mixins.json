@@ -1,8 +1,9 @@
 {
   "required": true,
-  "package": "dev.tazer.emerald_tablet.common.mixin",
+  "package": "dev.tazer.emerald_tablet.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "emerald_tablet.refmap.json",
+  "plugin": "dev.tazer.emerald_tablet.mixin.plugin.EmeraldMixinPlugin",
   "mixins": [
   ],
   "client": [
