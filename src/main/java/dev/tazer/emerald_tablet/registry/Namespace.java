@@ -181,7 +181,7 @@ public class Namespace {
     }
 
     public void ifLoaded(String modId, Consumer<Namespace> action) {
-        ModIntegration.ifLoaded(modId, () -> action.accept(this));
+        ModIntegration.ifPresent(modId, () -> action.accept(this));
     }
 
     public CreativeTabModification modifyTab(ResourceKey<CreativeModeTab> tab) {

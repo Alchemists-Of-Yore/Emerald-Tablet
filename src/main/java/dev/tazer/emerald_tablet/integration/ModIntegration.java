@@ -11,12 +11,12 @@ public final class ModIntegration {
 
     private ModIntegration() {}
 
-    public static boolean isLoaded(String modId) {
+    public static boolean isPresent(String modId) {
         return ModList.get().isLoaded(modId);
     }
 
-    public static void ifLoaded(String modId, Runnable action) {
-        if (isLoaded(modId)) action.run();
+    public static void ifPresent(String modId, Runnable action) {
+        if (isPresent(modId)) action.run();
     }
 
     public static ResourceLocation location(String modId, String path) {
