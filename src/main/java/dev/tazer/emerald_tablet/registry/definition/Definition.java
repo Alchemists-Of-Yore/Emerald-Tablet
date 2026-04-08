@@ -8,11 +8,12 @@ import net.minecraft.tags.TagKey;
 
 import java.util.function.Supplier;
 
-public abstract class Definition<T extends B, B> {
+public abstract class Definition<T extends B, B> implements Supplier<T> {
     private Namespace namespace;
     private final ResourceKey<Registry<B>> registry;
     private final String id;
     private final Supplier<T> supplier;
+    private T cachedValue;
     private Holder<B> holder;
 
     protected Definition(ResourceKey<Registry<B>> registry, String id, Supplier<T> supplier) {
@@ -72,7 +73,10 @@ public abstract class Definition<T extends B, B> {
     }
 
     public final T get() {
-        return supplier.get();
+        if (cachedValue == null) {
+            cachedValue = supplier.get();
+        }
+        return cachedValue;
     }
 
     protected void setHolder(Holder<B> holder) {
