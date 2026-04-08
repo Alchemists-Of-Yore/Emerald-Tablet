@@ -73,7 +73,11 @@ public class EmeraldEvents {
         PotionBrewing.Builder builder = event.getBuilder();
         EmeraldTablet.namespaces().forEach(namespace -> {
             for (PotionDefinition definition : namespace.getDefinitions(PotionDefinition.class)) {
-                if (definition.brewingInput() != null && definition.brewingIngredient() != null) {
+                if (definition.brewingIngredient() == null) continue;
+
+                if (definition.isStartMix()) {
+                    builder.addStartMix(definition.brewingIngredient().get(), definition.holder());
+                } else if (definition.brewingInput() != null) {
                     builder.addMix(definition.brewingInput().get(), definition.brewingIngredient().get(), definition.holder());
                 }
             }

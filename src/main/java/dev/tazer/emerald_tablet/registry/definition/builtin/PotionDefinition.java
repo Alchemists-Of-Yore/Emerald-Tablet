@@ -20,6 +20,7 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     private Supplier<Holder<Potion>> brewingInput;
     @Nullable
     private Supplier<Item> brewingIngredient;
+    private boolean isStartMix = false;
 
     public PotionDefinition(String id, Supplier<Potion> potion) {
         super(Registries.POTION, id, potion);
@@ -33,6 +34,13 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
         return this;
     }
 
+    public PotionDefinition startMix(Supplier<Item> ingredient) {
+        requireMutable();
+        this.brewingIngredient = ingredient;
+        this.isStartMix = true;
+        return this;
+    }
+
     @Nullable
     public Supplier<Holder<Potion>> brewingInput() {
         return brewingInput;
@@ -41,6 +49,10 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     @Nullable
     public Supplier<Item> brewingIngredient() {
         return brewingIngredient;
+    }
+
+    public boolean isStartMix() {
+        return isStartMix;
     }
 
     @Override
