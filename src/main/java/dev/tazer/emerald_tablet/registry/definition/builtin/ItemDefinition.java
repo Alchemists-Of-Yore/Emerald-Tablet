@@ -101,7 +101,7 @@ public class ItemDefinition<T extends Item> extends ItemLikeDefinition<T, Item> 
     }
 
     @Override
-    protected Registry<Item> builtInRegistry() {
+    public Registry<Item> builtInRegistry() {
         return BuiltInRegistries.ITEM;
     }
 

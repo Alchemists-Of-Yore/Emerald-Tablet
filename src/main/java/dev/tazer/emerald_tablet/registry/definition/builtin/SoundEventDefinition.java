@@ -61,7 +61,7 @@ public class SoundEventDefinition extends BuiltInDefinition<SoundEvent, SoundEve
     }
 
     @Override
-    protected Registry<SoundEvent> builtInRegistry() {
+    public Registry<SoundEvent> builtInRegistry() {
         return BuiltInRegistries.SOUND_EVENT;
     }
 

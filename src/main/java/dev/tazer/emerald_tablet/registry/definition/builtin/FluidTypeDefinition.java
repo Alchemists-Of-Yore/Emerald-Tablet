@@ -143,7 +143,7 @@ public class FluidTypeDefinition extends BuiltInDefinition<FluidType, FluidType>
     }
 
     @Override
-    protected Registry<FluidType> builtInRegistry() {
+    public Registry<FluidType> builtInRegistry() {
         return NeoForgeRegistries.FLUID_TYPES;
     }
 

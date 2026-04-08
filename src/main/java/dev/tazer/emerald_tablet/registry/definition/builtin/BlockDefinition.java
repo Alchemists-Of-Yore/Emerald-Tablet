@@ -202,7 +202,7 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
     }
 
     @Override
-    protected Registry<Block> builtInRegistry() {
+    public Registry<Block> builtInRegistry() {
         return BuiltInRegistries.BLOCK;
     }
 

@@ -1,8 +1,7 @@
 package dev.tazer.emerald_tablet;
 
-import dev.tazer.emerald_tablet.loot.TabletLootModifiers;
+import dev.tazer.emerald_tablet.registry.TheTablet;
 import dev.tazer.emerald_tablet.registry.Namespace;
-import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -32,27 +31,11 @@ public class EmeraldTablet {
     }
 
     public EmeraldTablet(IEventBus bus, ModContainer container, Dist dist) {
-        TabletLootModifiers.register();
-        bus.addListener(EmeraldTablet::register);
+        TheTablet.register();
+        EMERALD_TABLET.registerTo(bus);
     }
 
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
-    }
-
-    private static void register(RegisterEvent event) {
-        namespaces().forEach(namespace ->
-                namespace.getBuiltInDefinitions().forEach(definition ->
-                        registerDefinition(event, namespace, definition)
-                )
-        );
-    }
-
-    private static <T extends B, B> void registerDefinition(RegisterEvent event, Namespace namespace,
-                                                              BuiltInDefinition<T, B> definition) {
-        ResourceLocation location = namespace.id(definition.id());
-        event.register(definition.registry(), location, definition::get);
-        definition.aliases().forEach(alias -> event.getRegistry().addAlias(location, namespace.id(alias)));
-        definition.bind();
     }
 }

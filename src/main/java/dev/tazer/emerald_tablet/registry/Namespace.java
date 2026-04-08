@@ -1,24 +1,31 @@
 package dev.tazer.emerald_tablet.registry;
 
+import dev.tazer.emerald_tablet.datagen.*;
 import dev.tazer.emerald_tablet.integration.ModIntegration;
 import dev.tazer.emerald_tablet.registry.definition.Definition;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinitionSet;
 import dev.tazer.emerald_tablet.registry.definition.builtin.BuiltInDefinition;
 import dev.tazer.emerald_tablet.registry.definition.dynamic.DynamicDefinition;
 import dev.tazer.emerald_tablet.registry.definition.dynamic.DynamicDefinitionSet;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -35,6 +42,56 @@ public class Namespace {
 
     public String id() {
         return id;
+    }
+
+    public void registerTo(IEventBus bus) {
+        bus.addListener(this::onRegisterEvent);
+        bus.addListener(this::onGatherData);
+    }
+
+    private void onGatherData(GatherDataEvent event) {
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = generator.getPackOutput();
+
+        boolean server = event.includeServer();
+        boolean client = event.includeClient();
+
+        generator.addProvider(client, new EmeraldLanguageProvider(packOutput, this));
+        generator.addProvider(client, new EmeraldBlockStateProvider(packOutput, this, existingFileHelper));
+        generator.addProvider(client, new EmeraldItemModelProvider(packOutput, this, existingFileHelper));
+        generator.addProvider(client, new EmeraldSoundProvider(packOutput, this));
+
+        generator.addProvider(server, new EmeraldDataMapProvider(packOutput, lookupProvider, this));
+        generator.addProvider(server, new EmeraldLootTableProvider(packOutput, lookupProvider, this));
+
+        getTags().keySet().stream()
+                .map(TagKey::registry)
+                .distinct()
+                .forEach(registryKey -> registerTagProvider(
+                        generator, packOutput, lookupProvider, existingFileHelper, registryKey));
+
+        RegistrySetBuilder registrySetBuilder = new RegistrySetBuilder();
+        addToRegistrySetBuilder(registrySetBuilder);
+        generator.addProvider(server, new DatapackBuiltinEntriesProvider(
+                packOutput, lookupProvider, registrySetBuilder, Set.of(id)));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void registerTagProvider(DataGenerator generator, PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper, ResourceKey<?> registryKey) {
+        generator.addProvider(true, new EmeraldTagsProvider<>(packOutput, (ResourceKey<? extends Registry<T>>) registryKey, lookupProvider, this, existingFileHelper));
+    }
+
+    private void onRegisterEvent(RegisterEvent event) {
+        for (BuiltInDefinition<?, ?> definition : getBuiltInDefinitions()) {
+            if (!event.getRegistryKey().equals(definition.registry())) continue;
+
+            ResourceLocation location = id(definition.id());
+            definition.registerTo(location);
+            definition.aliases().forEach(alias -> definition.builtInRegistry().addAlias(location, id(alias)));
+            definition.bind();
+        }
     }
 
     public <T extends Definition<?, ?>> T add(T definition) {

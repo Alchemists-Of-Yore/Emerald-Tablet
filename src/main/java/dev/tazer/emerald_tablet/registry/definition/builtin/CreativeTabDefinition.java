@@ -78,7 +78,7 @@ public class CreativeTabDefinition extends BuiltInDefinition<CreativeModeTab, Cr
     }
 
     @Override
-    protected Registry<CreativeModeTab> builtInRegistry() {
+    public Registry<CreativeModeTab> builtInRegistry() {
         return BuiltInRegistries.CREATIVE_MODE_TAB;
     }
 

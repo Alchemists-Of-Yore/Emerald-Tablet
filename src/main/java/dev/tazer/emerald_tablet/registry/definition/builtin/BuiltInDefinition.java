@@ -3,6 +3,7 @@ package dev.tazer.emerald_tablet.registry.definition.builtin;
 import dev.tazer.emerald_tablet.registry.definition.Definition;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,11 @@ public abstract class BuiltInDefinition<T extends B, B> extends Definition<T, B>
         super(registry, id, supplier);
     }
 
-    protected abstract Registry<B> builtInRegistry();
+    public abstract Registry<B> builtInRegistry();
+
+    public void registerTo(ResourceLocation location) {
+        Registry.register(builtInRegistry(), location, get());
+    }
 
     @Override
     public void bind() {

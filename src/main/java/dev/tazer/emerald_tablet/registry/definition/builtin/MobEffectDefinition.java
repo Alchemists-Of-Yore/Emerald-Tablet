@@ -28,7 +28,7 @@ public class MobEffectDefinition<T extends MobEffect> extends BuiltInDefinition<
     }
 
     @Override
-    protected Registry<MobEffect> builtInRegistry() {
+    public Registry<MobEffect> builtInRegistry() {
         return BuiltInRegistries.MOB_EFFECT;
     }
 

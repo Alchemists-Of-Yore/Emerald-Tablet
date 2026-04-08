@@ -45,7 +45,7 @@ public class BuiltInDefinitionSet<B> {
         }
 
         @Override
-        protected Registry<B> builtInRegistry() {
+        public Registry<B> builtInRegistry() {
             return builtInRegistry;
         }
     }

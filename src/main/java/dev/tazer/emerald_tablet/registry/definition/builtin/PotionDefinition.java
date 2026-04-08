@@ -77,7 +77,7 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     }
 
     @Override
-    protected Registry<Potion> builtInRegistry() {
+    public Registry<Potion> builtInRegistry() {
         return BuiltInRegistries.POTION;
     }
 

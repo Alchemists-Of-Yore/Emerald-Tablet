@@ -90,7 +90,7 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
     }
 
     @Override
-    protected Registry<EntityType<?>> builtInRegistry() {
+    public Registry<EntityType<?>> builtInRegistry() {
         return BuiltInRegistries.ENTITY_TYPE;
     }
 
