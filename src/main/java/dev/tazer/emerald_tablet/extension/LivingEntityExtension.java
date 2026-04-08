@@ -2,7 +2,11 @@ package dev.tazer.emerald_tablet.extension;
 
 public interface LivingEntityExtension {
 
-    void emeraldTablet$setWillDropDeathLoot(boolean skip);
+    default void emeraldTablet$setWillDropDeathLoot(boolean willDrop) {
+        throw new AssertionError("Implemented in Mixins!");
+    }
 
-    boolean emeraldTablet$willDropDeathLoot();
+    default boolean emeraldTablet$willDropDeathLoot() {
+        throw new AssertionError("Implemented in Mixins!");
+    }
 }
