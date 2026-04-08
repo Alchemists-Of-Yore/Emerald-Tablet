@@ -36,4 +36,9 @@ public class MobEffectDefinition<T extends MobEffect> extends BuiltInDefinition<
     public String translationPrefix() {
         return "effect";
     }
+
+    public MobEffectDefinition<T> withName(String name) {
+        setName(name);
+        return this;
+    }
 }

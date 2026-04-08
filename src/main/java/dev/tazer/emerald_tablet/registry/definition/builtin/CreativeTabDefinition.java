@@ -96,4 +96,9 @@ public class CreativeTabDefinition extends BuiltInDefinition<CreativeModeTab, Cr
     public void setTranslations(Translations translations) {
         this.translations = translations;
     }
+
+    public CreativeTabDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

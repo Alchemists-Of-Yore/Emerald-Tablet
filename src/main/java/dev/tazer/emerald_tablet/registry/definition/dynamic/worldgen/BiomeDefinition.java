@@ -36,4 +36,9 @@ public class BiomeDefinition extends DynamicDefinition<Biome> implements HasName
     public String translationPrefix() {
         return "biome";
     }
+
+    public BiomeDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

@@ -103,4 +103,9 @@ public class AdvancementDefinition extends DynamicDefinition<Advancement> implem
     private Advancement advancement() {
         return get();
     }
+
+    public AdvancementDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

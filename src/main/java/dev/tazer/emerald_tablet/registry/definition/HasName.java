@@ -26,17 +26,13 @@ public interface HasName {
         return map;
     }
 
-    @SuppressWarnings("unchecked")
-    default <S extends Definition<?, ?>> S withName(String name) {
+    default void setName(String name) {
         requireMutable();
         setTranslations(translations().withName(name));
-        return (S) this;
     }
 
-    @SuppressWarnings("unchecked")
-    default <S extends Definition<?, ?>> S withTranslation(String suffix, String value) {
+    default void addTranslation(String suffix, String value) {
         requireMutable();
         setTranslations(translations().withExtra(suffix, value));
-        return (S) this;
     }
 }

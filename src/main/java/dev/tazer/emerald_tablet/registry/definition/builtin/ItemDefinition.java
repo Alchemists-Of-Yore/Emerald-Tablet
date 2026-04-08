@@ -83,4 +83,9 @@ public class ItemDefinition<T extends Item> extends ItemLikeDefinition<T, Item> 
     public String translationPrefix() {
         return "item";
     }
+
+    public ItemDefinition<T> withName(String name) {
+        setName(name);
+        return this;
+    }
 }

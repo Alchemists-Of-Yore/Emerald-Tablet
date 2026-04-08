@@ -161,4 +161,9 @@ public class FluidTypeDefinition extends BuiltInDefinition<FluidType, FluidType>
     public void setTranslations(Translations translations) {
         this.translations = translations;
     }
+
+    public FluidTypeDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

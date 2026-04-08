@@ -207,4 +207,9 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
             namespace.tag(miningLevel.tag()).add(this);
         }
     }
+
+    public BlockDefinition<T> withName(String name) {
+        setName(name);
+        return this;
+    }
 }

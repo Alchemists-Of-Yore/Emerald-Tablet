@@ -54,4 +54,9 @@ public class SoundEventDefinition extends BuiltInDefinition<SoundEvent, SoundEve
     public String translationPrefix() {
         return "subtitles";
     }
+
+    public SoundEventDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

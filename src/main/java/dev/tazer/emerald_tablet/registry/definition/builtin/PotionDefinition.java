@@ -73,4 +73,9 @@ public class PotionDefinition extends BuiltInDefinition<Potion, Potion> implemen
     public String translationPrefix() {
         return "potion";
     }
+
+    public PotionDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

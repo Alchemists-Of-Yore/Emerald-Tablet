@@ -120,4 +120,9 @@ public class EntityTypeDefinition<T extends Entity> extends BuiltInDefinition<En
             Heightmap.Types heightmapType,
             SpawnPlacements.SpawnPredicate<M> predicate
     ) {}
+
+    public EntityTypeDefinition<T> withName(String name) {
+        setName(name);
+        return this;
+    }
 }

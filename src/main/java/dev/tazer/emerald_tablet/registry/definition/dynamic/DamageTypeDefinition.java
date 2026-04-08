@@ -57,4 +57,9 @@ public class DamageTypeDefinition extends DynamicDefinition<DamageType> implemen
     public String translationPrefix() {
         return "damage_type";
     }
+
+    public DamageTypeDefinition withName(String name) {
+        setName(name);
+        return this;
+    }
 }

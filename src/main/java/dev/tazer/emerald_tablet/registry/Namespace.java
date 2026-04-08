@@ -27,6 +27,7 @@ public class Namespace {
     private final List<Definition<?, ?>> definitions = new ArrayList<>();
     private final Map<TagKey<?>, Tag<?>> tags = new HashMap<>();
     private final List<CreativeTabModification> creativeTabModifications = new ArrayList<>();
+    private final Map<String, String> translations = new LinkedHashMap<>();
 
     public Namespace(String id) {
         this.id = id;
@@ -111,6 +112,15 @@ public class Namespace {
 
     public BlockItemTag blockAndItemTag(TagKey<Block> blockTagKey, TagKey<Item> itemTagKey) {
         return new BlockItemTag(tag(blockTagKey), tag(itemTagKey));
+    }
+
+    public Namespace translation(String key, String value) {
+        translations.put(key, value);
+        return this;
+    }
+
+    public Map<String, String> getTranslations() {
+        return translations;
     }
 
     public void ifLoaded(String modId, Consumer<Namespace> action) {

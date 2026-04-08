@@ -20,5 +20,7 @@ public class EmeraldLanguageProvider extends LanguageProvider {
                 hasName.translationEntries().forEach(this::add);
             }
         }
+
+        namespace.getTranslations().forEach(this::add);
     }
 }
