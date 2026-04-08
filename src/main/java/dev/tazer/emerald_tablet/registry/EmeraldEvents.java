@@ -99,15 +99,10 @@ public class EmeraldEvents {
                 if (event.getTabKey() == modification.tab()) {
                     for (CreativeTabModification.Entry entry : modification.entries()) {
                         switch (entry.type()) {
-                            case ADD -> event.accept(new ItemStack(entry.item().get()));
-                            case INSERT_BEFORE -> event.insertBefore(
-                                    new ItemStack(entry.anchor().get()),
-                                    new ItemStack(entry.item().get()),
-                                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-                            case INSERT_AFTER -> event.insertAfter(
-                                    new ItemStack(entry.anchor().get()),
-                                    new ItemStack(entry.item().get()),
-                                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            case ADD -> event.accept(entry.stack().get());
+                            case REMOVE -> event.remove(entry.stack().get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            case INSERT_BEFORE -> event.insertBefore(entry.anchor().get(), entry.stack().get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                            case INSERT_AFTER -> event.insertAfter(entry.anchor().get(), entry.stack().get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                         }
                     }
                     modification.freeze();

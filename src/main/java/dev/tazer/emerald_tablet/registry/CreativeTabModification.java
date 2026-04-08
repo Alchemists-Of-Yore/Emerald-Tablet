@@ -2,7 +2,8 @@ package dev.tazer.emerald_tablet.registry;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,26 +30,32 @@ public class CreativeTabModification {
         return tab;
     }
 
-    public CreativeTabModification add(Supplier<? extends ItemLike> item) {
+    public CreativeTabModification add(Supplier<ItemStack> stack) {
         requireMutable();
-        entries.add(new Entry(Type.ADD, item, null));
+        entries.add(new Entry(Type.ADD, stack, null));
         return this;
     }
 
-    public CreativeTabModification insertBefore(Supplier<? extends ItemLike> existingItem, Supplier<? extends ItemLike> newItem) {
+    public CreativeTabModification remove(Supplier<ItemStack> stack) {
         requireMutable();
-        entries.add(new Entry(Type.INSERT_BEFORE, newItem, existingItem));
+        entries.add(new Entry(Type.REMOVE, stack, null));
         return this;
     }
 
-    public CreativeTabModification insertAfter(Supplier<? extends ItemLike> existingItem, Supplier<? extends ItemLike> newItem) {
+    public CreativeTabModification insertBefore(Supplier<ItemStack> anchor, Supplier<ItemStack> item) {
         requireMutable();
-        entries.add(new Entry(Type.INSERT_AFTER, newItem, existingItem));
+        entries.add(new Entry(Type.INSERT_BEFORE, item, anchor));
+        return this;
+    }
+
+    public CreativeTabModification insertAfter(Supplier<ItemStack> anchor, Supplier<ItemStack> item) {
+        requireMutable();
+        entries.add(new Entry(Type.INSERT_AFTER, item, anchor));
         return this;
     }
 
     @SafeVarargs
-    public final CreativeTabModification insertAfter(Supplier<? extends ItemLike> anchor, Supplier<? extends ItemLike>... items) {
+    public final CreativeTabModification insertAfter(Supplier<ItemStack> anchor, Supplier<ItemStack>... items) {
         requireMutable();
         for (int i = items.length - 1; i >= 0; i--) {
             entries.add(new Entry(Type.INSERT_AFTER, items[i], anchor));
@@ -57,7 +64,7 @@ public class CreativeTabModification {
     }
 
     @SafeVarargs
-    public final CreativeTabModification insertBefore(Supplier<? extends ItemLike> anchor, Supplier<? extends ItemLike>... items) {
+    public final CreativeTabModification insertBefore(Supplier<ItemStack> anchor, Supplier<ItemStack>... items) {
         requireMutable();
         for (int i = items.length - 1; i >= 0; i--) {
             entries.add(new Entry(Type.INSERT_BEFORE, items[i], anchor));
@@ -71,9 +78,10 @@ public class CreativeTabModification {
 
     public enum Type {
         ADD,
+        REMOVE,
         INSERT_BEFORE,
         INSERT_AFTER
     }
 
-    public record Entry(Type type, Supplier<? extends ItemLike> item, Supplier<? extends ItemLike> anchor) {}
+    public record Entry(Type type, Supplier<ItemStack> stack, @Nullable Supplier<ItemStack> anchor) {}
 }
