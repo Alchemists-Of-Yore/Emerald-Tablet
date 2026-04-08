@@ -12,12 +12,16 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Block> implements HasLootTable {
@@ -46,6 +50,8 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
 
     @Nullable
     private Supplier<Block> strippedBlock;
+
+    private final Map<String, ResourceLocation> textures = new LinkedHashMap<>();
 
     public BlockDefinition(String id, Supplier<T> block) {
         super(Registries.BLOCK, id, block);
@@ -168,6 +174,20 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
         return strippedBlock;
     }
 
+    public BlockDefinition<T> texture(String key, ResourceLocation texture) {
+        requireMutable();
+        this.textures.put(key, texture);
+        return this;
+    }
+
+    public BlockDefinition<T> texture(ResourceLocation texture) {
+        return texture("all", texture);
+    }
+
+    public Map<String, ResourceLocation> textures() {
+        return Collections.unmodifiableMap(textures);
+    }
+
     @Override
     @Nullable
     public Supplier<LootTable.Builder> lootTableBuilderSupplier() {
@@ -196,6 +216,9 @@ public class BlockDefinition<T extends Block> extends ItemLikeDefinition<T, Bloc
         super.onBuild(namespace);
 
         if (item != null) {
+            if (blockStateTemplate == null && item.modelTemplate() == ItemModelTemplate.BLOCK_PARENT) {
+                item.withoutModel();
+            }
             item = namespace.add(item);
         }
 

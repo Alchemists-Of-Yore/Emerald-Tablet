@@ -5,31 +5,24 @@ import dev.tazer.emerald_tablet.registry.definition.builtin.BlockDefinition;
 import dev.tazer.emerald_tablet.registry.definition.template.BlockStateTemplate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ButtonBlock;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.CandleBlock;
-import net.minecraft.world.level.block.CeilingHangingSignBlock;
-import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
-import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.WallHangingSignBlock;
-import net.minecraft.world.level.block.WallSignBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
+import java.util.Map;
 
 public class EmeraldBlockStateProvider extends BlockStateProvider {
     private final Namespace namespace;
@@ -46,94 +39,91 @@ public class EmeraldBlockStateProvider extends BlockStateProvider {
             if (template == null) continue;
 
             Block block = definition.get();
-//            switch (template) {
-//                case SIMPLE -> simpleBlockWithItem(block, cubeAll(block));
-//                case SLAB -> slabBlock((SlabBlock) block, blockTexture(block), blockTexture(block));
-//                case STAIRS -> stairsBlock((StairBlock) block, blockTexture(block));
-//                case WALL -> wallBlock((WallBlock) block, blockTexture(block));
-//                case FENCE -> fenceBlock((FenceBlock) block, blockTexture(block));
-//                case FENCE_GATE -> fenceGateBlock((FenceGateBlock) block, blockTexture(block));
-//                case DOOR -> doorBlock((DoorBlock) block, blockTexture(block).withSuffix("_bottom"), blockTexture(block).withSuffix("_top"));
-//                case TRAPDOOR -> trapdoorBlock((TrapDoorBlock) block, blockTexture(block), true);
-//                case BUTTON -> buttonBlock((ButtonBlock) block, blockTexture(block));
-//                case PRESSURE_PLATE -> pressurePlateBlock((PressurePlateBlock) block, blockTexture(block));
-//                case PILLAR -> logBlock((RotatedPillarBlock) block);
-//                case CROSS -> simpleBlock(block, models().cross(name(block), blockTexture(block)).renderType("cutout"));
-//                case CROP -> {} // TODO: crops need age property handling
-//                case HORIZONTAL_FACING -> horizontalBlock(block, blockTexture(block), blockTexture(block).withSuffix("_front"), blockTexture(block));
-//                case ALL_FACING -> directionalBlock(block, models().cubeAll(name(block), blockTexture(block)));
-//                case SIGN -> signBlock(block, blockTexture(block));
-//                case WALL_SIGN -> signBlock((WallSignBlock) block, blockTexture(block));
-//                case HANGING_SIGN -> hangingSignBlock((CeilingHangingSignBlock) block, blockTexture(block));
-//                case WALL_HANGING_SIGN -> hangingSignBlock((WallHangingSignBlock) block, blockTexture(block));
-//                case FLOWER_POT -> simpleBlock(block, models().singleTexture(name(block), mcLoc("block/flower_pot_cross"), "plant", blockTexture(block)));
-//            }
+            Map<String, ResourceLocation> textures = definition.textures().isEmpty()
+                    ? Map.of("all", ResourceLocation.fromNamespaceAndPath(namespace.id(), "block/" + definition.id()))
+                    : definition.textures();
+
+            switch (template) {
+                case SIMPLE -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    simpleBlockWithItem(block, models().cubeAll(name(block), tex));
+                }
+                case SLAB -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    slabBlock((SlabBlock) block, tex, tex);
+                }
+                case STAIRS -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    stairsBlock((StairBlock) block, tex);
+                }
+                case WALL -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    wallBlock((WallBlock) block, tex);
+                }
+                case FENCE -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    fenceBlock((FenceBlock) block, tex);
+                }
+                case FENCE_GATE -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    fenceGateBlock((FenceGateBlock) block, tex);
+                }
+                case DOOR -> {
+                    ResourceLocation top = req(textures, "top", definition);
+                    ResourceLocation bottom = req(textures, "bottom", definition);
+                    doorBlock((DoorBlock) block, bottom, top);
+                }
+                case TRAPDOOR -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    trapdoorBlock((TrapDoorBlock) block, tex, true);
+                }
+                case BUTTON -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    buttonBlock((ButtonBlock) block, tex);
+                }
+                case PRESSURE_PLATE -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    pressurePlateBlock((PressurePlateBlock) block, tex);
+                }
+                case PILLAR -> logBlock((RotatedPillarBlock) block);
+                case CROSS -> {
+                    ResourceLocation tex = req(textures, "cross", definition);
+                    simpleBlock(block, models().cross(name(block), tex).renderType("cutout"));
+                }
+                case CROP -> {}
+                case HORIZONTAL_FACING -> {
+                    ResourceLocation side = req(textures, "side", definition);
+                    ResourceLocation front = req(textures, "front", definition);
+                    ResourceLocation top = textures.getOrDefault("top", side);
+                    horizontalBlock(block, side, front, top);
+                }
+                case ALL_FACING -> {
+                    ResourceLocation tex = req(textures, "all", definition);
+                    directionalBlock(block, models().cubeAll(name(block), tex));
+                }
+                case SIGN, WALL_SIGN, HANGING_SIGN, WALL_HANGING_SIGN -> {
+                    ResourceLocation tex = req(textures, "particle", definition);
+                    simpleBlock(block, models().sign(name(block), tex));
+                }
+                case CAMPFIRE -> {}
+                case LANTERN -> {}
+                case CANDLE -> {}
+                case FLOWER_POT -> {
+                    ResourceLocation plant = req(textures, "plant", definition);
+                    simpleBlock(block, models().singleTexture(name(block), mcLoc("block/flower_pot_cross"), "plant", plant));
+                }
+            }
         }
     }
 
-//    private void signBlock(StandingSignBlock block, net.minecraft.resources.ResourceLocation texture) {
-//        ModelFile model = models().sign(name(block), texture);
-//        simpleBlock(block, model);
-//    }
-//
-//    private void signBlock(WallSignBlock block, net.minecraft.resources.ResourceLocation texture) {
-//        ModelFile model = models().sign(name(block), texture);
-//        simpleBlock(block, model);
-//    }
-//
-//    private void hangingSignBlock(CeilingHangingSignBlock block, net.minecraft.resources.ResourceLocation texture) {
-//        ModelFile model = models().sign(name(block), texture);
-//        simpleBlock(block, model);
-//    }
-//
-//    private void hangingSignBlock(WallHangingSignBlock block, net.minecraft.resources.ResourceLocation texture) {
-//        ModelFile model = models().sign(name(block), texture);
-//        simpleBlock(block, model);
-//    }
-//
-//    private void campfireBlock(CampfireBlock block) {
-//        String n = name(block);
-//        ModelFile lit = models().withExistingParent(n, mcLoc("block/template_campfire"))
-//                .texture("fire", blockTexture(block).withSuffix("_fire"))
-//                .texture("lit_log", blockTexture(block).withSuffix("_log_lit"));
-//        ModelFile unlit = models().getExistingFile(mcLoc("block/campfire_off"));
-//        getVariantBuilder(block)
-//                .forAllStatesExcept(state -> {
-//                    boolean isLit = state.getValue(BlockStateProperties.LIT);
-//                    int rotation = (int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot();
-//                    return ConfiguredModel.builder()
-//                            .modelFile(isLit ? lit : unlit)
-//                            .rotationY(rotation)
-//                            .build();
-//                }, BlockStateProperties.SIGNAL_FIRE, BlockStateProperties.WATERLOGGED);
-//    }
-//
-//    private void lanternBlock(LanternBlock block) {
-//        String n = name(block);
-//        ModelFile lantern = models().withExistingParent(n, mcLoc("block/template_lantern"))
-//                .texture("lantern", blockTexture(block));
-//        ModelFile hanging = models().withExistingParent(n + "_hanging", mcLoc("block/template_hanging_lantern"))
-//                .texture("lantern", blockTexture(block));
-//        getVariantBuilder(block).forAllStates(state -> {
-//            boolean isHanging = state.getValue(BlockStateProperties.HANGING);
-//            return ConfiguredModel.builder()
-//                    .modelFile(isHanging ? hanging : lantern)
-//                    .build();
-//        });
-//    }
-//
-//    private void candleBlock(CandleBlock block) {
-//        String n = name(block);
-//        getVariantBuilder(block).forAllStatesExcept(state -> {
-//            int candles = state.getValue(BlockStateProperties.CANDLES);
-//            boolean lit = state.getValue(BlockStateProperties.LIT);
-//            String suffix = (candles > 1 ? "_" + candles + "_candles" : "_one_candle") + (lit ? "_lit" : "");
-//            ModelFile model = models().withExistingParent(n + suffix, mcLoc("block/template" + suffix))
-//                    .texture("all", blockTexture(block))
-//                    .texture("particle", blockTexture(block));
-//            return ConfiguredModel.builder().modelFile(model).build();
-//        }, BlockStateProperties.WATERLOGGED);
-//    }
+    private ResourceLocation req(Map<String, ResourceLocation> textures, String key, BlockDefinition<?> def) {
+        ResourceLocation tex = textures.get(key);
+        if (tex == null) {
+            throw new IllegalStateException("BlockDefinition '" + def.id() + "' with template " +
+                    def.blockStateTemplate() + " is missing required texture key '" + key + "'");
+        }
+        return tex;
+    }
 
     private String name(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block).getPath();
